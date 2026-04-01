@@ -10,7 +10,7 @@ yarn-error.log*
 # Environment variables
 .env
 .env.test
-.env.local
+.en
 
 # Operating system files
 .DS_Store

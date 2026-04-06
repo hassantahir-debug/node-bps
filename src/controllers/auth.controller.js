@@ -1,7 +1,6 @@
 const userModel = require("../models/user");
-const { comparePassword } = require("../utils/hash");
+const { comparePassword, hashPassword } = require("../utils/hash");
 const { generateToken } = require("../utils/jwt");
-const hash = require("../utils/hash");
 
 const login = async (req, res) => {
   try {
@@ -60,7 +59,7 @@ const getME = async (req, res) => {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const GetAllusers = async () => {
+const GetAllusers = async (req, res) => {
   try {
     const users = await userModel.getAllusers();
 
@@ -85,13 +84,16 @@ const createUser = async (req, res) => {
     const user = await userModel.findUserByEmail(email);
 
     if (user) {
-      return res.status(401).json({ message: "User already registered" });
+      return res.status(409).json({ message: "Email already in use" });
     }
 
-    const hashedPassword = await hash.hashPassword(password);
-    const newUser = await userModel.createUser({ ...req.body, password: hashedPassword });
+    const hashedPassword = await hashPassword(password);
+    const newUser = await userModel.createUser({
+      ...req.body,
+      password: hashedPassword,
+    });
 
-    return res.status(200).json({
+    return res.status(201).json({
       message: "user created successful",
       newUser: {
         id: newUser.id,
@@ -107,7 +109,7 @@ const createUser = async (req, res) => {
 
 // //////////////////////////////////////////////////
 
-const deleteUser = async (res, req) => {
+const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     const isDeleted = await userModel.deleteUser(id);
@@ -117,7 +119,7 @@ const deleteUser = async (res, req) => {
     }
     return res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    error.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -126,21 +128,23 @@ const deleteUser = async (res, req) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, password, role } = req.body;
-    const updatedUser = await userModel.updateUser(
-      id,
+    let { name, email, password, role } = req.body;
+
+    if (password) {
+      password = await hashPassword(password); 
+    }
+
+    const updatedUser = await userModel.updateUser(id, {
       name,
       email,
       password,
       role,
-    );
+    });
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
-    return res
-      .status(200)
-      .json({ message: "User updated successfully", updatedUser });
+    return res.status(200).json({ message: "User updated successfully", updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

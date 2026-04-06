@@ -17,7 +17,7 @@ const createUser = async (userData) => {
 const findUserById = async (id) => {
   try {
     const [rows] = await db.query(
-      "SELECT * FROM users WHERE id = ? AND deleted_at IS NULL",
+      "SELECT id, name, email, role, created_at FROM users WHERE id = ? AND deleted_at IS NULL",
       [id],
     );
     return rows[0];
@@ -28,15 +28,38 @@ const findUserById = async (id) => {
 };
 
 const updateUser = async (id, userData) => {
-  const { name, email, password, role } = userData;
+  const fields = [];
+  const values = [];
+
+  if (userData.name) {
+    fields.push("name = ?");
+    values.push(userData.name);
+  }
+  if (userData.email) {
+    fields.push("email = ?");
+    values.push(userData.email);
+  }
+  if (userData.password) {
+    fields.push("password = ?");
+    values.push(userData.password);
+  }
+  if (userData.role) {
+    fields.push("role = ?");
+    values.push(userData.role);
+  }
+
+  if (fields.length === 0) return null;
+
+  values.push(id);
+
   try {
-    const [result] = await db.query(
-      "UPDATE users SET name = ?, email = ?,password =? , role = ? WHERE id = ?",
-      [name, email, password, role, id],
+    await db.query(
+      `UPDATE users SET ${fields.join(", ")} WHERE id = ? AND deleted_at IS NULL`,
+      values,
     );
     return findUserById(id);
   } catch (error) {
-    console.error("error in updating user", error);
+    console.error("Error updating user:", error);
     throw error;
   }
 };
@@ -47,8 +70,7 @@ const deleteUser = async (id) => {
       "UPDATE users SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL",
       [id],
     );
-    // return { affectedRows: 1, ... },
-    return result.affectedRows > 0; // true agar delete hua, false agar user mila hi nahi
+    return result.affectedRows > 0;
   } catch (error) {
     console.error("Delete operation is not executed", error);
     throw error;
@@ -57,25 +79,25 @@ const deleteUser = async (id) => {
 
 const getAllusers = async () => {
   try {
-    const [AllUsers] = await db.query(
-      "SELECT * FROM users WHERE deleted_at IS NULL",
+    const [rows] = await db.query(
+      "SELECT id, name, email, role, created_at FROM users WHERE deleted_at IS NULL",
     );
-    return AllUsers;
+    return rows;
   } catch (error) {
-    console.error("eroor in getting all users", error);
+    console.error("Error getting all users:", error);
     throw error;
   }
 };
 
 const findUserByEmail = async (email) => {
   try {
-    const [user] = await db.query(
-      "SELECT * FROM users WHERE email = ? AND deleted_at IS NULL",
+    const [rows] = await db.query(
+      "SELECT id, name, email, password, role, created_at FROM users WHERE email = ? AND deleted_at IS NULL",
       [email],
     );
-    return user[0];
+    return rows[0];
   } catch (error) {
-    console.error("error in retrival of user ", error);
+    console.error("Error finding user by email:", error);
     throw error;
   }
 };

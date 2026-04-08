@@ -1,11 +1,10 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
+import jwt from "jsonwebtoken";
 
 if (!process.env.JWT_SECRET) {
   console.error("JWT_SECRET is not defined in the environment variables.");
   process.exit(1);
 }
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const generateToken = (user) => {
@@ -25,7 +24,4 @@ const verifyToken = (token) => {
   }
 };
 
-module.exports = {
-  generateToken,
-  verifyToken,
-};
+export { generateToken, verifyToken };

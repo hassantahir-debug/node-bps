@@ -1,4 +1,4 @@
-const db = require("../config/db");
+import db from "../config/db.js";
 
 const createUser = async (userData) => {
   const { name, email, password, role } = userData;
@@ -102,7 +102,7 @@ const findUserByEmail = async (email) => {
   }
 };
 
-module.exports = {
+export {
   getAllusers,
   findUserByEmail,
   findUserById,

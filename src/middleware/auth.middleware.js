@@ -1,4 +1,4 @@
-const jwt = require("../utils/jwt");
+import { verifyToken } from "../utils/jwt.js";
 
 const checkToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -8,7 +8,7 @@ const checkToken = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verifyToken(token);
+    const decoded = verifyToken(token);
     req.user = decoded;
     next();
   } catch (error) {
@@ -18,6 +18,5 @@ const checkToken = (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 };
-module.exports = {
-  checkToken,
-};
+
+export { checkToken };

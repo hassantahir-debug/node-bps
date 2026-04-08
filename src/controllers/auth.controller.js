@@ -1,6 +1,6 @@
-const userModel = require("../models/user");
-const { comparePassword, hashPassword } = require("../utils/hash");
-const { generateToken } = require("../utils/jwt");
+import * as userModel from "../models/user.js";
+import { comparePassword, hashPassword } from "../utils/hash.js";
+import { generateToken } from "../utils/jwt.js";
 
 const login = async (req, res) => {
   try {
@@ -38,6 +38,7 @@ const login = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 const getME = async (req, res) => {
   try {
@@ -131,7 +132,7 @@ const updateUser = async (req, res) => {
     let { name, email, password, role } = req.body;
 
     if (password) {
-      password = await hashPassword(password); 
+      password = await hashPassword(password);
     }
 
     const updatedUser = await userModel.updateUser(id, {
@@ -144,18 +145,14 @@ const updateUser = async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
-    return res.status(200).json({ message: "User updated successfully", updatedUser });
+    return res
+      .status(200)
+      .json({ message: "User updated successfully", updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 // ////////////////////////////////////////////////////////////////////////////////////////
 
-module.exports = {
-  createUser,
-  deleteUser,
-  login,
-  GetAllusers,
-  getME,
-  updateUser,
-};
+export { createUser, deleteUser, login, GetAllusers, getME, updateUser };

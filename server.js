@@ -1,8 +1,15 @@
-const app = require("./src/app");
-require("dotenv").config();
-require("./src/config/db"); // just triggers connection test
+import "dotenv/config";
+import app from "./src/app.js";
+import { initializeBrowser } from "./src/services/browserService.js";
+import "./src/config/db.js";
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+initializeBrowser()
+  .then(() => {
+    console.log("Browser initialized successfully.");
+    app.listen(PORT);
+  })
+  .catch((err) => {
+    console.error("Failed to initialize browser:", err);
+    process.exit(1);
+  });

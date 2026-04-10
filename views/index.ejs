@@ -1,19 +1,264 @@
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <script src="https://tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-100 p-10">
-    <div class="max-w-4xl mx-auto bg-white p-8 shadow-md rounded-lg">
-      
-      <div class="border-b-2 border-blue-600 pb-4 mb-6">
-        <h1 class="text-3xl font-bold text-blue-800"><%= content.title %></h1>
-        <p class="text-gray-600 italic mt-1"><%= content.description %></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f5b785;
+      color: #3a2a21;
+    }
+
+    .invoice-container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 70px 60px;
+    }
+
+    .header-title {
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: 6px;
+      margin-bottom: 88px;
+      text-transform: uppercase;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+
+    .label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .value.bold {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .details-group {
+      text-align: right;
+    }
+
+    .details-item {
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+    }
+
+    th,
+    td {
+      padding: 12px 0;
+      text-align: left;
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    th {
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #3a2a21;
+    }
+
+    td.amount,
+    th.amount {
+      text-align: right;
+    }
+
+    .items-divider {
+      border-bottom: 2px solid #7f3f8f;
+      margin-top: 8px;
+    }
+
+    .totals {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .totals-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 60px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .totals-row span:last-child {
+      min-width: 120px;
+      text-align: right;
+    }
+
+    .totals-row.grand-total {
+      font-size: 18px;
+      font-weight: 800;
+      margin-top: 10px;
+    }
+
+    .payment-info {
+      margin-top: 40px;
+    }
+
+    .payment-info .value {
+      margin-bottom: 6px;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #51382b;
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+    <h1 class="header-title">INVOICE</h1>
+
+    <div class="section-grid">
+      <div>
+        <span class="label">Issued To:</span>
+        <p class="value bold"><%= content.data.issued_to_name || content.data.patient_name || content.data.client_name %></p>
+        <% if (content.data.issued_to_company) { %>
+          <p class="value"><%= content.data.issued_to_company %></p>
+        <% } %>
+        <% if (content.data.issued_to_address) { %>
+          <p class="value"><%= content.data.issued_to_address %></p>
+        <% } %>
+        <% if (content.data.issued_to_city) { %>
+          <p class="value"><%= content.data.issued_to_city %></p>
+        <% } %>
+        <% if (content.data.issued_to_state) { %>
+          <p class="value"><%= content.data.issued_to_state %></p>
+        <% } %>
+        <% if (content.data.issued_to_postal_code) { %>
+          <p class="value"><%= content.data.issued_to_postal_code %></p>
+        <% } %>
       </div>
 
-      <div class="prose max-w-none">
+      <div class="details-group">
+        <div class="details-item">
+          <span class="label">Invoice No:</span>
+          <p class="value bold"><%= content.data.invoice_no || content.data.invoiceNo || content.data.visit_id || content.data.id %></p>
+        </div>
+        <div class="details-item">
+          <span class="label">Date:</span>
+          <p class="value"><%= content.data.date || content.data.appointment_date || content.data.invoice_date %></p>
+        </div>
+        <div class="details-item">
+          <span class="label">Due Date:</span>
+          <p class="value"><%= content.data.due_date || content.data.dueDate %></p>
+        </div>
       </div>
-
     </div>
-  </body>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 52%;">DESCRIPTION</th>
+          <th style="width: 16%;">RATE</th>
+          <th style="width: 16%;">QTY</th>
+          <th class="amount" style="width: 16%;">TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% const lineItems = content.data.items || content.data.procedureCodes || []; %>
+        <% if (Array.isArray(lineItems) && lineItems.length > 0) { %>
+          <% lineItems.forEach(function(item) { %>
+            <tr>
+              <td class="value"><%= item.description || item.name || item.code || '' %></td>
+              <td class="value"><%= item.rate ?? item.price ?? item.amount ?? '' %></td>
+              <td class="value"><%= item.qty ?? item.quantity ?? 1 %></td>
+              <td class="value amount"><%= item.total ?? item.amount ?? item.price ?? '' %></td>
+            </tr>
+          <% }); %>
+        <% } %>
+      </tbody>
+    </table>
+
+    <div class="items-divider"></div>
+
+    <div class="totals">
+      <div class="totals-row">
+        <span class="label">Subtotal</span>
+        <span class="value"><%= content.data.subtotal ?? content.data.grossCharges ?? '' %></span>
+      </div>
+      <div class="totals-row">
+        <span class="label">Tax</span>
+        <span class="value">
+          <% if (content.data.taxPercentage != null) { %>
+            <%= content.data.taxPercentage %>%
+          <% } %>
+          <% if (content.data.taxAmount != null) { %>
+            <%= content.data.taxAmount %>
+          <% } else { %>
+            <%= content.data.taxAndSurcharges ?? '' %>
+          <% } %>
+        </span>
+      </div>
+      <div class="totals-row grand-total">
+        <span class="label">Total</span>
+        <span class="value"><%= content.data.total ?? content.data.totalPatientDue ?? '' %></span>
+      </div>
+    </div>
+
+    <div class="payment-info">
+      <span class="label">Payment Info:</span>
+      <% if (content.data.paymentInfo) { %>
+        <% if (content.data.paymentInfo.bank_name) { %>
+          <p class="value"><%= content.data.paymentInfo.bank_name %></p>
+        <% } %>
+        <% if (content.data.paymentInfo.account_name) { %>
+          <p class="value">Account Name: <%= content.data.paymentInfo.account_name %></p>
+        <% } %>
+        <% if (content.data.paymentInfo.account_no) { %>
+          <p class="value">Account No: <%= content.data.paymentInfo.account_no %></p>
+        <% } %>
+      <% } else { %>
+        <% if (content.data.bank_name) { %>
+          <p class="value"><%= content.data.bank_name %></p>
+        <% } %>
+        <% if (content.data.account_name) { %>
+          <p class="value">Account Name: <%= content.data.account_name %></p>
+        <% } %>
+        <% if (content.data.account_no) { %>
+          <p class="value">Account No: <%= content.data.account_no %></p>
+        <% } %>
+      <% } %>
+    </div>
+
+    <% if (content.data.notes) { %>
+      <p class="footer-note"><%= content.data.notes %></p>
+    <% } %>
+  </div>
+</body>
 </html>

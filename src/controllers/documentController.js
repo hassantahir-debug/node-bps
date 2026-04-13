@@ -1,72 +1,42 @@
-import ejs from "ejs";
+import { generatingInvoice, generatingNf2 } from "../helper/helper.js";
 import { Readable } from "stream";
-import { getBrowser, getPublicAssetsUrl } from "../services/browserService.js";
-import { creatingInvoice } from "../helper/helper.js";
-import path from "path";
-export const generatingInvoice = async (req, res) => {
+
+export const generatingInvoiceController = async (req, res) => {
   try {
-    const page = await getBrowser().newPage();
-    const templatePath = path.resolve("views/index.ejs");
-    const template = await ejs.renderFile(templatePath, {
-      content: {
-        data: req.body.meta_data,
-      },
-      publicAssetsUrl: getPublicAssetsUrl(),
-      pdfData: req.body,
-    });
-    await page.setContent(template, {
-      waitUntil: "networkidle0",
-    });
-    await page.evaluateHandle("document.fonts.ready");
-    const pdfBuffer = await page.pdf({
-      path: "document.pdf",
-      width: "595px",
-      height: "842px",
-      margin: { top: "50px", right: "40px", bottom: "50px", left: "35px" },
-      footerTemplate: '<footer style="height: 50px"></footer>',
-      displayHeaderFooter: true,
-      printBackground: true,
-    });
-    await page.close();
-    const fileName = creatingInvoice(pdfBuffer);
+    const { pdfBuffer, fileName } = await generatingInvoice(req);
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("x-file-name", fileName);
     const pdfStream = Readable.from(pdfBuffer);
+    const id = req.body.meta_data.id
+    try {
+      const docFile = new FormData()
+      docFile.append("bill_id", id)
+      docFile.append("file", pdfBuffer, {
+        filename: fileName,
+        contentType: "application/pdf"
+      })
+      const res = await fetch(`${process.env.LARAVEL_URL}/api/document`, {
+        method: "POST",
+        body: docFile,
+      })
+      console.log(res)
+    } catch (error) {
+      throw new Error("error sending file in laravel", error)
+    }
     pdfStream
       .pipe(res)
       .on("end", () => res.end())
       .on("error", () => res.end());
+
   } catch (error) {
-    console.error("Error generating PDF:", error);
-    return res.status(500).json({ error: "Failed to generate PDF" });
+    console.error("Error generating invoice:", error);
+    return res.status(500).json({ error: "Failed to generate invoice" });
   }
 };
-export const generatingNf2 = async (req, res) => {
+
+export const generatingNf2Controller = async (req, res) => {
   try {
-    const page = await getBrowser().newPage();
-    const templatePath = path.resolve("views/nf2.ejs");
-    const template = await ejs.renderFile(templatePath, {
-      content: {
-        data: req.body.meta_data,
-      },
-      publicAssetsUrl: getPublicAssetsUrl(),
-      pdfData: req.body,
-    });
-    await page.setContent(template, {
-      waitUntil: "networkidle0",
-    });
-    await page.evaluateHandle("document.fonts.ready");
-    const pdfBuffer = await page.pdf({
-      path: "document.pdf",
-      width: "595px",
-      height: "842px",
-      margin: { top: "50px", right: "40px", bottom: "50px", left: "35px" },
-      footerTemplate: '<footer style="height: 50px"></footer>',
-      displayHeaderFooter: true,
-      printBackground: true,
-    });
-    await page.close();
-    const fileName = creatingInvoice(pdfBuffer);
+    const { pdfBuffer, fileName } = await generatingNf2(req);
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("x-file-name", fileName);
     const pdfStream = Readable.from(pdfBuffer);
@@ -75,7 +45,7 @@ export const generatingNf2 = async (req, res) => {
       .on("end", () => res.end())
       .on("error", () => res.end());
   } catch (error) {
-    console.error("Error generating nf-2:", error);
-    return res.status(500).json({ error: "Failed to generate NF-2" });
+    console.error("Error generating NF2:", error);
+    return res.status(500).json({ error: "Failed to generate NF2" });
   }
 };

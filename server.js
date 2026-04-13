@@ -1,5 +1,5 @@
 import "dotenv/config";
-import app from "./src/app.js";
+import app from "./app.js";
 import { initializeBrowser } from "./src/services/browserService.js";
 import "./src/config/db.js";
 

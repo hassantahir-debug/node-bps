@@ -1,33 +1,23 @@
-import { generatingInvoice, generatingNf2 } from "../helper/helper.js";
+import {
+  generatingInvoice,
+  generatingNf2,
+  savingDocuments,
+} from "../helper/helper.js";
 import { Readable } from "stream";
 
 export const generatingInvoiceController = async (req, res) => {
   try {
-    const { pdfBuffer, fileName } = await generatingInvoice(req);
+    const { pdfBuffer, fileName, fileSizeInBytes } =
+      await generatingInvoice(req);
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("x-file-name", fileName);
     const pdfStream = Readable.from(pdfBuffer);
-    const id = req.body.meta_data.id
-    try {
-      const docFile = new FormData()
-      docFile.append("bill_id", id)
-      docFile.append("file", pdfBuffer, {
-        filename: fileName,
-        contentType: "application/pdf"
-      })
-      const res = await fetch(`${process.env.LARAVEL_URL}/api/document`, {
-        method: "POST",
-        body: docFile,
-      })
-      console.log(res)
-    } catch (error) {
-      throw new Error("error sending file in laravel", error)
-    }
+    const id = req.body.bill_id;
+    savingDocuments("invoice", fileName, id, fileSizeInBytes);
     pdfStream
       .pipe(res)
       .on("end", () => res.end())
       .on("error", () => res.end());
-
   } catch (error) {
     console.error("Error generating invoice:", error);
     return res.status(500).json({ error: "Failed to generate invoice" });

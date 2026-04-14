@@ -22,16 +22,13 @@ const login = async (req, res) => {
     }
 
     const token = generateToken(user);
-
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
     return res.status(200).json({
       message: "Login successful",
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user
     });
   } catch (error) {
     res.status(500).json({ message: "Server is error", error: error.message });

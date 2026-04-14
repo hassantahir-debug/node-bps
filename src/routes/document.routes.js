@@ -1,6 +1,10 @@
 import { Router } from "express";
-import { generateVehiclePDF } from "../controllers/documentController.js";
+import {
+  generatingInvoiceController,
+  generatingNf2Controller,
+} from "../controllers/documentController.js";
 
 const documentRouter = Router();
-documentRouter.post("/", generateVehiclePDF);
+documentRouter.post("/", generatingInvoiceController);
+documentRouter.post("/nf2", generatingNf2Controller);
 export default documentRouter;

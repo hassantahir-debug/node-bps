@@ -5,7 +5,6 @@ import { generateToken } from "../utils/jwt.js";
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     if (!email || !password) {
       return res
         .status(400)
@@ -35,7 +34,7 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server is error", error: error.message });
   }
 };
 

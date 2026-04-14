@@ -10,14 +10,13 @@ const sequelize = new Sequelize(
     logging: false,   // Set to console.log if you want to see raw SQL in terminal
     
     pool: {
-      max: 10,        // Matches your connectionLimit: 10
+      max: 10,        
       min: 0,
       acquire: 30000,
       idle: 10000
     },
 
     define: {
-      // This ensures Sequelize doesn't mess with your Laravel table naming
       timestamps: true,
       underscored: true, 
       createdAt: 'created_at',
@@ -27,7 +26,6 @@ const sequelize = new Sequelize(
   }
 );
 
-// Test the connection logic
 const testConnection = async () => {
   try {
     await sequelize.authenticate();

@@ -3,262 +3,570 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --navy:       #0a2240;
+      --teal:       #0e7c6b;
+      --teal-light: #e4f5f2;
+      --ice:        #f0f6fc;
+      --border:     #d6e4ef;
+      --muted:      #6b8299;
+      --text:       #0d1f2d;
+      --white:      #ffffff;
+    }
+@page{
+  size: A4 !important;
+}
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #f5b785;
-      color: #3a2a21;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
 
-    .invoice-container {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 70px 60px;
+.page {
+  width: 565px;
+  min-height: 750px; 
+  background: var(--white);
+}
+
+    .header {
+      background: var(--navy);
+      padding: 32px 44px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
     }
 
-    .header-title {
-      font-size: 64px;
-      font-weight: 800;
-      letter-spacing: 6px;
-      margin-bottom: 88px;
-      text-transform: uppercase;
-    }
-
-    .section-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 36px;
-      margin-bottom: 48px;
-    }
-
-    .label {
-      display: block;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 8px;
     }
 
-    .value {
-      font-size: 14px;
-      line-height: 1.5;
-      margin: 0;
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      color: var(--white);
     }
 
-    .value.bold {
+    .brand-sub {
+      font-size: 9px;
       font-weight: 700;
-      font-size: 18px;
-      margin-bottom: 8px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #7ab3cc;
     }
 
-    .details-group {
+    .invoice-label h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      color: var(--white);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      line-height: 1;
       text-align: right;
     }
 
-    .details-item {
-      margin-bottom: 10px;
+    .inv-number {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: #7ab3cc;
+      margin-top: 5px;
+      text-transform: uppercase;
+      text-align: right;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 40px;
+    .stripe { background: var(--teal); height: 4px; }
+
+    .meta-row {
+      background: var(--ice);
+      padding: 14px 44px;
+      display: flex;
+      gap: 36px;
+      border-bottom: 1px solid var(--border);
     }
 
-    th,
-    td {
-      padding: 12px 0;
-      text-align: left;
+    .meta-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .meta-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .body {
+       padding: 28px 20px;
+       }
+
+    .parties {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      background: var(--teal-light);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 9px;
+    }
+
+    .party-name {
       font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .party-detail {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* ── CLINICAL STRIP ── */
+    .clinical-strip {
+      background: var(--ice);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .ci-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .ci-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .badge-yes { background: #fde8e8; color: #b91c1c; }
+    .badge-no  { background: var(--teal-light); color: var(--teal); }
+
+    /* ── TABLE ── */
+    .items-table { width: 100%; border-collapse: collapse; }
+
+    .items-table thead tr { background: var(--navy); }
+
+    .items-table thead th {
+      padding: 10px 12px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #7ab3cc;
+      text-align: left;
+    }
+
+    .items-table thead th.r { text-align: right; }
+
+    .items-table tbody tr { border-bottom: 1px solid var(--border); }
+    .items-table tbody tr:last-child { border-bottom: none; }
+    .items-table tbody tr:nth-child(even) { background: var(--ice); }
+
+    .items-table tbody td {
+      padding: 11px 12px;
+      font-size: 12px;
+      color: var(--text);
       vertical-align: top;
     }
 
-    th {
-      font-weight: 800;
-      font-size: 12px;
+    .items-table tbody td.r {
+      text-align: right;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .code-badge {
+      display: inline-block;
+      background: var(--teal-light);
+      color: var(--teal);
+      font-size: 9px;
+      font-weight: 700;
       letter-spacing: 1px;
-      text-transform: uppercase;
-      border-bottom: 2px solid #3a2a21;
+      padding: 1px 7px;
+      border-radius: 4px;
+      margin-bottom: 3px;
     }
 
-    td.amount,
-    th.amount {
-      text-align: right;
-    }
-
-    .items-divider {
-      border-bottom: 2px solid #7f3f8f;
-      margin-top: 8px;
-    }
-
-    .totals {
-      margin-top: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-      font-size: 14px;
-    }
-
-    .totals-row {
-      display: flex;
-      justify-content: flex-end;
-      gap: 60px;
-      width: 100%;
-      max-width: 420px;
-    }
-
-    .totals-row span:last-child {
-      min-width: 120px;
-      text-align: right;
-    }
-
-    .totals-row.grand-total {
-      font-size: 18px;
-      font-weight: 800;
-      margin-top: 10px;
-    }
-
-    .payment-info {
-      margin-top: 40px;
-    }
-
-    .payment-info .value {
-      margin-bottom: 6px;
-    }
-
-    .footer-note {
-      margin-top: 20px;
+    .empty-row td {
+      text-align: center;
+      color: var(--muted);
       font-size: 12px;
-      color: #51382b;
+      padding: 24px 0;
+    }
+
+    /* ── TOTALS ── */
+    .totals-wrap { display: flex; justify-content: flex-end; margin-top: 16px; }
+
+    .totals-card {
+      width: 234px;
+      background: var(--ice);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .t-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 16px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .t-row:last-child { border-bottom: none; }
+    .t-row .tl { color: var(--muted); font-weight: 500; }
+    .t-row .tv { font-weight: 600; color: var(--navy); }
+    .t-row.grand { background: var(--navy); }
+    .t-row.grand .tl,
+    .t-row.grand .tv { color: var(--white); font-weight: 700; font-size: 13px; }
+
+    /* ── FOOTER BAND ── */
+    .footer-band {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .fp { padding: 16px 20px; }
+    .fp:first-child { border-right: 1px solid var(--border); }
+
+    .fp-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .fp p { font-size: 11px; color: var(--text); line-height: 1.8; }
+    .fp p span { color: var(--muted); }
+
+    /* ── DIAGNOSIS ── */
+    .diagnosis-box {
+      margin-top: 20px;
+      background: #f8f4ff;
+      border-left: 3px solid #7c5cbf;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+    }
+
+    .diagnosis-box .dlabel {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #7c5cbf;
+      margin-bottom: 4px;
+    }
+
+    .diagnosis-box p { font-size: 11.5px; color: #3a2a60; line-height: 1.6; }
+
+    /* ── NOTES ── */
+    .notes-box {
+      margin-top: 14px;
+      background: #fffbf0;
+      border-left: 3px solid #e8c34a;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+    }
+
+    .notes-box .nlabel {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #b08920;
+      margin-bottom: 4px;
+    }
+
+    .notes-box p { font-size: 11.5px; color: #5a4a1a; line-height: 1.6; }
+
+    /* ── PAGE FOOTER ── */
+    .page-footer {
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-footer p { font-size: 10px; color: var(--muted); }
+
+    .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      margin-right: 6px;
+      vertical-align: middle;
     }
   </style>
 </head>
 <body>
-  <div class="invoice-container">
-    <h1 class="header-title">INVOICE</h1>
+<div class="page">
 
-    <div class="section-grid">
-      <div>
-        <span class="label">Issued To:</span>
-        <p class="value bold"><%= content.data.issued_to_name || content.data.patient_name || content.data.client_name %></p>
-        <% if (content.data.issued_to_company) { %>
-          <p class="value"><%= content.data.issued_to_company %></p>
-        <% } %>
-        <% if (content.data.issued_to_address) { %>
-          <p class="value"><%= content.data.issued_to_address %></p>
-        <% } %>
-        <% if (content.data.issued_to_city) { %>
-          <p class="value"><%= content.data.issued_to_city %></p>
-        <% } %>
-        <% if (content.data.issued_to_state) { %>
-          <p class="value"><%= content.data.issued_to_state %></p>
-        <% } %>
-        <% if (content.data.issued_to_postal_code) { %>
-          <p class="value"><%= content.data.issued_to_postal_code %></p>
-        <% } %>
+  <%
+    const d = content.data;
+
+    function fmt(val) {
+      const n = parseFloat(val);
+      if (isNaN(n)) return '$0.00';
+      return '$' + n.toFixed(2);
+    }
+
+    function fmtDate(val) {
+      if (!val || val === 'N/A') return 'N/A';
+      const date = new Date(val);
+      if (isNaN(date.getTime())) return val;
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    const invoiceNo  = d.bill_id   || d.visit_id || d.id || '—';
+    const apptDate   = fmtDate(d.appointment_date);
+    const dueDateFmt = fmtDate(d.dueDate);
+    const procedures = Array.isArray(d.procedureCodes) ? d.procedureCodes : [];
+    const gross      = parseFloat(d.grossCharges)    || 0;
+    const ins        = parseFloat(d.insuranceCredit) || 0;
+    const adj        = parseFloat(d.adjustments)     || 0;
+    const tax        = parseFloat(d.taxAndSurcharges) || 0;
+    const total      = d.totalPatientDue != null
+                         ? parseFloat(d.totalPatientDue)
+                         : (gross - ins - adj + tax);
+  %>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="brand-row">
+        <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+          <rect x="10" y="0" width="8" height="28" rx="2" fill="#0e7c6b"/>
+          <rect x="0" y="10" width="28" height="8" rx="2" fill="#0e7c6b"/>
+        </svg>
+        <span class="brand-name">MediCare Billing</span>
       </div>
+      <div class="brand-sub">Healthcare Billing Services</div>
+    </div>
+    <div class="invoice-label">
+      <h1>Invoice</h1>
+      <div class="inv-number"># INV-<%= invoiceNo %></div>
+    </div>
+  </div>
 
-      <div class="details-group">
-        <div class="details-item">
-          <span class="label">Invoice No:</span>
-          <p class="value bold"><%= content.data.invoice_no || content.data.invoiceNo || content.data.visit_id || content.data.id %></p>
+  <div class="stripe"></div>
+
+
+  <div class="meta-row">
+    <div>
+      <div class="meta-label">Appointment Date</div>
+      <div class="meta-value"><%= apptDate %></div>
+    </div>
+    <div>
+      <div class="meta-label">Due Date</div>
+      <div class="meta-value"><%= dueDateFmt %></div>
+    </div>
+    <div>
+      <div class="meta-label">Visit ID</div>
+      <div class="meta-value">#<%= d.visit_id || '—' %></div>
+    </div>
+    <div>
+      <div class="meta-label">Status</div>
+      <div class="meta-value" style="color:#0e7c6b;">&#9679;&nbsp;Due</div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="parties">
+      <div>
+        <div class="pill">Patient</div>
+        <div class="party-name"><%= d.patient_name || '—' %></div>
+        <div class="party-detail">
+          Case Type:&nbsp;<%= d.case_type || '—' %><br/>
+          Category:&nbsp;<%= d.case_category || '—' %>
         </div>
-        <div class="details-item">
-          <span class="label">Date:</span>
-          <p class="value"><%= content.data.date || content.data.appointment_date || content.data.invoice_date %></p>
-        </div>
-        <div class="details-item">
-          <span class="label">Due Date:</span>
-          <p class="value"><%= content.data.due_date || content.data.dueDate %></p>
+      </div>
+      <div style="text-align:right;">
+        <div class="pill">Attending Physician</div>
+        <div class="party-name">Dr. <%= d.doctor_name || '—' %></div>
+        <div class="party-detail">
+          Appt:&nbsp;<%= apptDate %><br/>
+          Time:&nbsp;<%= d.appointment_time || '—' %>
         </div>
       </div>
     </div>
 
-    <table>
+    <div class="clinical-strip">
+      <div>
+        <div class="ci-label">Case Type</div>
+        <div class="ci-value"><%= d.case_type || '—' %></div>
+      </div>
+      <div>
+        <div class="ci-label">Specialty</div>
+        <div class="ci-value"><%= d.case_category || '—' %></div>
+      </div>
+      <div>
+        <div class="ci-label">Accident Related</div>
+        <div class="ci-value">
+          <% if (parseInt(d.is_accident) === 1) { %>
+            <span class="badge badge-yes">Yes</span>
+          <% } else { %>
+            <span class="badge badge-no">No</span>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <table class="items-table">
       <thead>
         <tr>
-          <th style="width: 52%;">DESCRIPTION</th>
-          <th style="width: 16%;">RATE</th>
-          <th style="width: 16%;">QTY</th>
-          <th class="amount" style="width: 16%;">TOTAL</th>
+          <th style="width:52%;">Description / Procedure</th>
+          <th style="width:14%;">Code</th>
+          <th style="width:14%;">Qty</th>
+          <th class="r" style="width:20%;">Amount</th>
         </tr>
       </thead>
       <tbody>
-        <% const lineItems = content.data.items || content.data.procedureCodes || []; %>
-        <% if (Array.isArray(lineItems) && lineItems.length > 0) { %>
-          <% lineItems.forEach(function(item) { %>
+        <% if (procedures.length > 0) { %>
+          <% procedures.forEach(function(item) { %>
             <tr>
-              <td class="value"><%= item.description || item.name || item.code || '' %></td>
-              <td class="value"><%= item.rate ?? item.price ?? item.amount ?? '' %></td>
-              <td class="value"><%= item.qty ?? item.quantity ?? 1 %></td>
-              <td class="value amount"><%= item.total ?? item.amount ?? item.price ?? '' %></td>
+              <td><%= item.description || '—' %></td>
+              <td>
+                <% if (item.code) { %>
+                  <span class="code-badge"><%= item.code %></span>
+                <% } else { %>—<% } %>
+              </td>
+              <td><%= item.qty != null ? item.qty : (item.quantity != null ? item.quantity : 1) %></td>
+              <td class="r"><%= fmt(item.price != null ? item.price : (item.amount != null ? item.amount : item.total)) %></td>
             </tr>
           <% }); %>
+        <% } else { %>
+          <tr class="empty-row">
+            <td colspan="4">No procedure codes recorded for this visit.</td>
+          </tr>
         <% } %>
       </tbody>
     </table>
 
-    <div class="items-divider"></div>
-
-    <div class="totals">
-      <div class="totals-row">
-        <span class="label">Subtotal</span>
-        <span class="value"><%= content.data.subtotal ?? content.data.grossCharges ?? '' %></span>
-      </div>
-      <div class="totals-row">
-        <span class="label">Tax</span>
-        <span class="value">
-          <% if (content.data.taxPercentage != null) { %>
-            <%= content.data.taxPercentage %>%
-          <% } %>
-          <% if (content.data.taxAmount != null) { %>
-            <%= content.data.taxAmount %>
-          <% } else { %>
-            <%= content.data.taxAndSurcharges ?? '' %>
-          <% } %>
-        </span>
-      </div>
-      <div class="totals-row grand-total">
-        <span class="label">Total</span>
-        <span class="value"><%= content.data.total ?? content.data.totalPatientDue ?? '' %></span>
+    <div class="totals-wrap">
+      <div class="totals-card">
+        <div class="t-row">
+          <span class="tl">Gross Charges</span>
+          <span class="tv"><%= fmt(d.grossCharges) %></span>
+        </div>
+        <% if (ins > 0) { %>
+        <div class="t-row">
+          <span class="tl">Insurance Credit</span>
+          <span class="tv" style="color:#0e7c6b;">- <%= fmt(d.insuranceCredit) %></span>
+        </div>
+        <% } %>
+        <% if (adj > 0) { %>
+        <div class="t-row">
+          <span class="tl">Adjustments</span>
+          <span class="tv" style="color:#0e7c6b;">- <%= fmt(d.adjustments) %></span>
+        </div>
+        <% } %>
+        <div class="t-row">
+          <span class="tl">Tax &amp; Surcharges</span>
+          <span class="tv"><%= fmt(d.taxAndSurcharges) %></span>
+        </div>
+        <div class="t-row grand">
+          <span class="tl">Total Patient Due</span>
+          <span class="tv"><%= fmt(total) %></span>
+        </div>
       </div>
     </div>
 
-    <div class="payment-info">
-      <span class="label">Payment Info:</span>
-      <% if (content.data.paymentInfo) { %>
-        <% if (content.data.paymentInfo.bank_name) { %>
-          <p class="value"><%= content.data.paymentInfo.bank_name %></p>
-        <% } %>
-        <% if (content.data.paymentInfo.account_name) { %>
-          <p class="value">Account Name: <%= content.data.paymentInfo.account_name %></p>
-        <% } %>
-        <% if (content.data.paymentInfo.account_no) { %>
-          <p class="value">Account No: <%= content.data.paymentInfo.account_no %></p>
-        <% } %>
-      <% } else { %>
-        <% if (content.data.bank_name) { %>
-          <p class="value"><%= content.data.bank_name %></p>
-        <% } %>
-        <% if (content.data.account_name) { %>
-          <p class="value">Account Name: <%= content.data.account_name %></p>
-        <% } %>
-        <% if (content.data.account_no) { %>
-          <p class="value">Account No: <%= content.data.account_no %></p>
-        <% } %>
-      <% } %>
+    <% if (d.diagnosis && d.diagnosis.trim() !== '') { %>
+    <div class="diagnosis-box">
+      <div class="dlabel">&#10010;&nbsp; Clinical Diagnosis</div>
+      <p><%= d.diagnosis %></p>
     </div>
-
-    <% if (content.data.notes) { %>
-      <p class="footer-note"><%= content.data.notes %></p>
     <% } %>
+
+    <% if (d.notes && d.notes.trim() !== '') { %>
+    <div class="notes-box">
+      <div class="nlabel">&#9432;&nbsp; Notes</div>
+      <p><%= d.notes %></p>
+    </div>
+    <% } %>
+
+    <div class="footer-band">
+      <div class="fp">
+        <div class="fp-label">Payment Information</div>
+        <p>
+          Please remit payment by&nbsp;<strong><%= dueDateFmt %></strong>.<br/>
+          Reference <strong>#INV-<%= invoiceNo %></strong> when paying.
+        </p>
+      </div>
+      <div class="fp">
+        <div class="fp-label">Thank You</div>
+        <p>Your health and wellbeing is our priority. For billing enquiries, contact our support team.</p>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <p><span class="dot"></span>MediCare Billing &mdash; Confidential Medical Document</p>
+      <p>Generated <%= new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) %></p>
+    </div>
+
   </div>
+</div>
 </body>
 </html>

@@ -10,7 +10,7 @@ const login = async (req, res) => {
         .status(400)
         .json({ message: "Email and password are required" });
     }
-    const user = await userModel.findUserByEmail(email);
+    const user = await userModel.findUserByEmail(email, true);
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
@@ -22,6 +22,8 @@ const login = async (req, res) => {
     }
 
     const token = generateToken(user);
+    const { password: _, ...safeUser } = user;
+
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -30,7 +32,8 @@ const login = async (req, res) => {
     });
     return res.status(200).json({
       message: "Login successful",
-      user,
+      token,
+      user: safeUser,
     });
   } catch (error) {
     res.status(500).json({ message: "Server is error", error: error.message });
@@ -88,8 +91,10 @@ const createUser = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
     const newUser = await userModel.createUser({
-      ...req.body,
+      name,
+      email,
       password: hashedPassword,
+      role,
     });
 
     return res.status(201).json({

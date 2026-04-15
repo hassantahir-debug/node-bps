@@ -45,7 +45,16 @@ const User = db.define(
     createdAt: "created_at",
     updatedAt: "updated_at",
     deletedAt: "deleted_at",
-    paranoid: true, // Enables soft deletes
+    paranoid: true, //  soft deletes
+
+    defaultScope: {
+      attributes: { exclude: ["password"] },
+    },
+    scopes: {
+      withPassword: {
+        attributes: { include: ["password"] },
+      },
+    },
   },
 );
 
@@ -69,9 +78,11 @@ const findUserById = async (id) => {
   }
 };
 
-const findUserByEmail = async (email) => {
+const findUserByEmail = async (email, includePassword = false) => {
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = includePassword
+      ? await User.scope("withPassword").findOne({ where: { email } })
+      : await User.findOne({ where: { email } });
     return user ? user.toJSON() : null;
   } catch (error) {
     console.error("Error finding user by email:", error);
@@ -83,7 +94,8 @@ const updateUser = async (id, userData) => {
   try {
     const [affectedRows] = await User.update(userData, { where: { id } });
     if (affectedRows > 0) {
-      return findUserById(id);
+      const updatedUser = await findUserById(id);
+      return updatedUser;
     }
     return null;
   } catch (error) {
@@ -104,7 +116,9 @@ const deleteUser = async (id) => {
 
 const getAllusers = async () => {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll({
+      attributes: { exclude: ["password"] },
+    });
     return users.map((user) => user.toJSON());
   } catch (error) {
     console.error("Error getting all users:", error);

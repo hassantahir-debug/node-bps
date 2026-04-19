@@ -15,7 +15,7 @@ export const closeBrowserInstance = async () => {
   }
 };
 export const getPublicAssetsUrl = () => {
-  return `http://localhost:3000/`;
+  return `${process.env.APP_URL}/`;
 };
 export const getBrowser = () => {
   if (!browserInstance) {

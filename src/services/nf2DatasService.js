@@ -1,7 +1,6 @@
 export const nf2DataService = async (id) => {
-    
-  const res = await fetch(`http://localhost:8000/api/accidentdetails/${id}`, {
-    method: "GET",
+  const res = await fetch(`${process.env.LARAVEL_URL}/api/accidentdetails/${id}`, {
+      method: "GET",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",

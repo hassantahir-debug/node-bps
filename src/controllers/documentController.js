@@ -4,38 +4,46 @@ import {
   savingDocuments,
 } from "../helper/helper.js";
 import { Readable } from "stream";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const generatingInvoiceController = async (req, res) => {
-  try {
-    const { pdfBuffer, fileName, fileSizeInBytes } =
-      await generatingInvoice(req);
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("x-file-name", fileName);
-    const pdfStream = Readable.from(pdfBuffer);
-    const id = req.body.bill_id;
-    savingDocuments("invoice", fileName, id, fileSizeInBytes);
-    pdfStream
-      .pipe(res)
-      .on("end", () => res.end())
-      .on("error", () => res.end());
-  } catch (error) {
-    console.error("Error generating invoice:", error);
-    return res.status(500).json({ error: "Failed to generate invoice" });
-  }
-};
+// Generate invoice
+export const generatingInvoiceController = asyncHandler(async (req, res) => {
+  // Create PDF
+  const { pdfBuffer, fileName, fileSizeInBytes } = await generatingInvoice(req);
+  
+  // Set headers
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("x-file-name", fileName);
+  
+  // Stream response
+  const pdfStream = Readable.from(pdfBuffer);
+  const id = req.body.bill_id;
+  
+  // Save document
+  savingDocuments("invoice", fileName, id, fileSizeInBytes);
+  
+  // Pipe response
+  pdfStream
+    .pipe(res)
+    .on("end", () => res.end())
+    .on("error", () => res.end());
+});
 
-export const generatingNf2Controller = async (req, res) => {
-  try {
-    const { pdfBuffer, fileName } = await generatingNf2(req);
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("x-file-name", fileName);
-    const pdfStream = Readable.from(pdfBuffer);
-    pdfStream
-      .pipe(res)
-      .on("end", () => res.end())
-      .on("error", () => res.end());
-  } catch (error) {
-    console.error("Error generating NF2:", error);
-    return res.status(500).json({ error: "Failed to generate NF2" });
-  }
-};
+// Generate NF2
+export const generatingNf2Controller = asyncHandler(async (req, res) => {
+  // Create PDF
+  const { pdfBuffer, fileName } = await generatingNf2(req);
+  
+  // Set headers
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("x-file-name", fileName);
+  
+  // Stream response
+  const pdfStream = Readable.from(pdfBuffer);
+  
+  // Pipe response
+  pdfStream
+    .pipe(res)
+    .on("end", () => res.end())
+    .on("error", () => res.end());
+});

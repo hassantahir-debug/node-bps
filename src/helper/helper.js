@@ -3,6 +3,8 @@ import path from "path";
 import ejs from "ejs";
 import { getBrowser, getPublicAssetsUrl } from "../services/browserService.js";
 import { nf2DataService } from "../services/nf2DatasService.js";
+
+
 export const creatingInvoice = (pdfBuffer) => {
   const fileName = `invoice_${Date.now()}.pdf`;
   const filePath = path.resolve("public", fileName);
@@ -20,7 +22,7 @@ export const savingDocuments = async (type, fileName, id, fileSizeInBytes) => {
       document_type: type || "nf2",
       file_name: fileName,
       file_size: fileSizeInBytes,
-      file_path: `http://localhost:3000/${fileName}`,
+      file_path: `${process.env.APP_URL}/document/${fileName}`,
       file_type: "pdf",
       upload_date: new Date().toISOString().slice(0, 19).replace("T", " "),
       uploaded_by: 2,

@@ -8,13 +8,6 @@ const sequelize = new Sequelize(
     port: process.env.CONFIG_PORT || 3306,
     dialect: 'mysql', // Explicitly tell Sequelize to use MySQL
     logging: false,   // Set to console.log if you want to see raw SQL in terminal
-    
-    pool: {
-      max: 10,        
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    },
 
     define: {
       timestamps: true,

@@ -4,11 +4,11 @@ import ejs from "ejs";
 import { getBrowser, getPublicAssetsUrl } from "../services/browserService.js";
 import { nf2DataService } from "../services/nf2DatasService.js";
 
-export const creatingInvoice = (pdfBuffer) => {
-  const fileName = `invoice_${Date.now()}.pdf`;
+export const creatingDoc = async (pdfBuffer, docName = "invoice") => {
+  const fileName = `${docName}_${Date.now()}.pdf`;
   const filePath = path.resolve("public", fileName);
-  fs.writeFileSync(filePath, pdfBuffer);
-  const stats = fs.statSync(filePath);
+  await fs.promises.writeFile(filePath, pdfBuffer);
+  const stats = await fs.promises.stat(filePath);
   const fileSizeInBytes = stats.size;
 
   return { fileName, fileSizeInBytes };
@@ -21,7 +21,6 @@ export const savingDocuments = async (
   req,
 ) => {
   try {
-    console.log(type, fileName, id, fileSizeInBytes);
     const cookies = req.headers.cookie || "";
     const sendObj = {
       bill_id: id,
@@ -50,7 +49,9 @@ export const savingDocuments = async (
     if (!fetchResponse.ok) {
       const errorDetail = await fetchResponse.text();
       console.error("Error Detail:", errorDetail);
+      return { error: true };
     }
+    return { success: true };
   } catch (error) {
     console.error("Error sending file to Laravel:", error);
   }
@@ -77,14 +78,14 @@ export const generatingInvoice = async (req) => {
     printBackground: true,
   });
   await page.close();
-  const { fileName, fileSizeInBytes } = creatingInvoice(pdfBuffer);
+  const { fileName, fileSizeInBytes } = await creatingDoc(pdfBuffer);
   return { pdfBuffer, fileName, fileSizeInBytes };
 };
 export const generatingNf2 = async (req) => {
   const page = await getBrowser().newPage();
 
   const randomId = Math.floor(Math.random() * 20) + 1;
-  const accidentData = await nf2DataService(randomId);
+  const accidentData = await nf2DataService(randomId, req);
 
   const templatePath = path.resolve("views/nf2.ejs");
 
@@ -112,6 +113,6 @@ export const generatingNf2 = async (req) => {
 
   await page.close();
 
-  const { fileName } = creatingInvoice(pdfBuffer);
+  const { fileName } = await creatingDoc(pdfBuffer, "nf2");
   return { pdfBuffer, fileName };
 };

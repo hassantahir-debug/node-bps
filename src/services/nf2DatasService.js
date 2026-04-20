@@ -1,4 +1,5 @@
-export const nf2DataService = async (id) => {
+export const nf2DataService = async (id, req) => {
+  const cookies = req.headers.cookie || "";
   const res = await fetch(
     `${process.env.LARAVEL_URL}/api/accidentdetails/${id}`,
     {
@@ -7,8 +8,9 @@ export const nf2DataService = async (id) => {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Cookie: cookies,
       },
-    },
+    }
   );
 
   if (!res.ok) {

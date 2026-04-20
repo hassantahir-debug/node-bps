@@ -4,7 +4,6 @@ import ejs from "ejs";
 import { getBrowser, getPublicAssetsUrl } from "../services/browserService.js";
 import { nf2DataService } from "../services/nf2DatasService.js";
 
-
 export const creatingInvoice = (pdfBuffer) => {
   const fileName = `invoice_${Date.now()}.pdf`;
   const filePath = path.resolve("public", fileName);
@@ -14,15 +13,22 @@ export const creatingInvoice = (pdfBuffer) => {
 
   return { fileName, fileSizeInBytes };
 };
-export const savingDocuments = async (type, fileName, id, fileSizeInBytes) => {
+export const savingDocuments = async (
+  type,
+  fileName,
+  id,
+  fileSizeInBytes,
+  req,
+) => {
   try {
     console.log(type, fileName, id, fileSizeInBytes);
+    const cookies = req.headers.cookie || "";
     const sendObj = {
       bill_id: id,
       document_type: type || "nf2",
       file_name: fileName,
       file_size: fileSizeInBytes,
-      file_path: `${process.env.APP_URL}/document/${fileName}`,
+      file_path: `${process.env.APP_URL}/${fileName}`,
       file_type: "pdf",
       upload_date: new Date().toISOString().slice(0, 19).replace("T", " "),
       uploaded_by: 2,
@@ -32,9 +38,11 @@ export const savingDocuments = async (type, fileName, id, fileSizeInBytes) => {
       `${process.env.LARAVEL_URL}/api/document`,
       {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Cookie: cookies,
         },
         body: JSON.stringify(sendObj),
       },

@@ -8,18 +8,43 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy:       #0a2240;
-      --teal:       #0e7c6b;
-      --teal-light: #e4f5f2;
-      --ice:        #f0f6fc;
-      --border:     #d6e4ef;
-      --muted:      #6b8299;
-      --text:       #0d1f2d;
-      --white:      #ffffff;
+      --navy:           #0a2240;
+      --teal:           #0e7c6b;
+      --teal-light:     #e4f5f2;
+      --teal-accent:    #7ab3cc;
+      --ice:            #f0f6fc;
+      --border:         #d6e4ef;
+      --muted:          #6b8299;
+      --text:           #0d1f2d;
+      --white:          #ffffff;
+      --red-light:      #fde8e8;
+      --red-dark:       #b91c1c;
+      --purple-light:   #f8f4ff;
+      --purple:         #7c5cbf;
+      --purple-dark:    #3a2a60;
+      --gold-light:     #fffbf0;
+      --gold:           #e8c34a;
+      --gold-dark:      #b08920;
+      --gold-text:      #5a4a1a;
     }
-@page{
-  size: A4 !important;
-}
+    @page {
+      size: A4 !important;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+        background: white;
+      }
+      .page {
+        width: 100%;
+        min-height: 100vh;
+        box-shadow: none;
+      }
+    }
+
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--white);
@@ -65,7 +90,7 @@
       font-weight: 700;
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: #7ab3cc;
+      color: var(--teal-accent);
     }
 
     .invoice-label h1 {
@@ -82,7 +107,7 @@
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 1.5px;
-      color: #7ab3cc;
+      color: var(--teal-accent);
       margin-top: 5px;
       text-transform: uppercase;
       text-align: right;
@@ -189,7 +214,7 @@
       border-radius: 4px;
     }
 
-    .badge-yes { background: #fde8e8; color: #b91c1c; }
+    .badge-yes { background: var(--red-light); color: var(--red-dark); }
     .badge-no  { background: var(--teal-light); color: var(--teal); }
 
     /* ── TABLE ── */
@@ -203,11 +228,21 @@
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #7ab3cc;
+      color: var(--teal-accent);
       text-align: left;
     }
 
     .items-table thead th.r { text-align: right; }
+
+    /* Table column widths */
+    .items-table th:nth-child(1),
+    .items-table td:nth-child(1) { width: 52%; }
+    .items-table th:nth-child(2),
+    .items-table td:nth-child(2) { width: 14%; }
+    .items-table th:nth-child(3),
+    .items-table td:nth-child(3) { width: 14%; }
+    .items-table th:nth-child(4),
+    .items-table td:nth-child(4) { width: 20%; }
 
     .items-table tbody tr { border-bottom: 1px solid var(--border); }
     .items-table tbody tr:last-child { border-bottom: none; }
@@ -299,8 +334,8 @@
     /* ── DIAGNOSIS ── */
     .diagnosis-box {
       margin-top: 20px;
-      background: #f8f4ff;
-      border-left: 3px solid #7c5cbf;
+      background: var(--purple-light);
+      border-left: 3px solid var(--purple);
       border-radius: 0 6px 6px 0;
       padding: 12px 16px;
     }
@@ -310,17 +345,17 @@
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #7c5cbf;
+      color: var(--purple);
       margin-bottom: 4px;
     }
 
-    .diagnosis-box p { font-size: 11.5px; color: #3a2a60; line-height: 1.6; }
+    .diagnosis-box p { font-size: 11.5px; color: var(--purple-dark); line-height: 1.6; }
 
     /* ── NOTES ── */
     .notes-box {
       margin-top: 14px;
-      background: #fffbf0;
-      border-left: 3px solid #e8c34a;
+      background: var(--gold-light);
+      border-left: 3px solid var(--gold);
       border-radius: 0 6px 6px 0;
       padding: 12px 16px;
     }
@@ -330,11 +365,11 @@
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #b08920;
+      color: var(--gold-dark);
       margin-bottom: 4px;
     }
 
-    .notes-box p { font-size: 11.5px; color: #5a4a1a; line-height: 1.6; }
+    .notes-box p { font-size: 11.5px; color: var(--gold-text); line-height: 1.6; }
 
     /* ── PAGE FOOTER ── */
     .page-footer {
@@ -357,6 +392,18 @@
       margin-right: 6px;
       vertical-align: middle;
     }
+
+    /* Status indicator */
+    .status-teal { color: var(--teal); }
+
+    /* Party alignment */
+    .party-right { text-align: right; }
+
+    /* Highlight color for totals */
+    .highlight-teal { color: var(--teal); }
+
+    /* SVG color helper */
+    .svg-teal { fill: var(--teal); }
   </style>
 </head>
 <body>
@@ -396,8 +443,8 @@
     <div>
       <div class="brand-row">
         <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-          <rect x="10" y="0" width="8" height="28" rx="2" fill="#0e7c6b"/>
-          <rect x="0" y="10" width="28" height="8" rx="2" fill="#0e7c6b"/>
+          <rect x="10" y="0" width="8" height="28" rx="2" class="svg-teal"/>
+          <rect x="0" y="10" width="28" height="8" rx="2" class="svg-teal"/>
         </svg>
         <span class="brand-name">MediCare Billing</span>
       </div>
@@ -427,7 +474,7 @@
     </div>
     <div>
       <div class="meta-label">Status</div>
-      <div class="meta-value" style="color:#0e7c6b;">&#9679;&nbsp;Due</div>
+      <div class="meta-value status-teal">&#9679;&nbsp;Due</div>
     </div>
   </div>
 
@@ -442,7 +489,7 @@
           Category:&nbsp;<%= d.case_category || '—' %>
         </div>
       </div>
-      <div style="text-align:right;">
+      <div class="party-right">
         <div class="pill">Attending Physician</div>
         <div class="party-name">Dr. <%= d.doctor_name || '—' %></div>
         <div class="party-detail">
@@ -476,10 +523,10 @@
     <table class="items-table">
       <thead>
         <tr>
-          <th style="width:52%;">Description / Procedure</th>
-          <th style="width:14%;">Code</th>
-          <th style="width:14%;">Qty</th>
-          <th class="r" style="width:20%;">Amount</th>
+          <th>Description / Procedure</th>
+          <th>Code</th>
+          <th>Qty</th>
+          <th class="r">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -513,13 +560,13 @@
         <% if (ins > 0) { %>
         <div class="t-row">
           <span class="tl">Insurance Credit</span>
-          <span class="tv" style="color:#0e7c6b;">- <%= fmt(d.insuranceCredit) %></span>
+          <span class="tv highlight-teal">- <%= fmt(d.insuranceCredit) %></span>
         </div>
         <% } %>
         <% if (adj > 0) { %>
         <div class="t-row">
           <span class="tl">Adjustments</span>
-          <span class="tv" style="color:#0e7c6b;">- <%= fmt(d.adjustments) %></span>
+          <span class="tv highlight-teal">- <%= fmt(d.adjustments) %></span>
         </div>
         <% } %>
         <div class="t-row">

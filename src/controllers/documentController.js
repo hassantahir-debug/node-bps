@@ -10,18 +10,18 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 export const generatingInvoiceController = asyncHandler(async (req, res) => {
   // Create PDF
   const { pdfBuffer, fileName, fileSizeInBytes } = await generatingInvoice(req);
-  
+
   // Set headers
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader("x-file-name", fileName);
-  
+
   // Stream response
   const pdfStream = Readable.from(pdfBuffer);
   const id = req.body.bill_id;
-  
+
   // Save document
-  savingDocuments("invoice", fileName, id, fileSizeInBytes);
-  
+  savingDocuments("invoice", fileName, id, fileSizeInBytes, req);
+
   // Pipe response
   pdfStream
     .pipe(res)
@@ -33,14 +33,15 @@ export const generatingInvoiceController = asyncHandler(async (req, res) => {
 export const generatingNf2Controller = asyncHandler(async (req, res) => {
   // Create PDF
   const { pdfBuffer, fileName } = await generatingNf2(req);
-  
+
   // Set headers
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader("x-file-name", fileName);
-  
+
   // Stream response
   const pdfStream = Readable.from(pdfBuffer);
-  
+  savingDocuments("nf2", fileName, id, fileSizeInBytes, req);
+
   // Pipe response
   pdfStream
     .pipe(res)

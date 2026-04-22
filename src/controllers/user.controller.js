@@ -49,6 +49,14 @@ const updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   let { name, email, password, role } = req.body;
 
+  // Check if email is already in use by another user
+  if (email) {
+    const existingUser = await userModel.findUserByEmail(email);
+    if (existingUser && existingUser.id != id) {
+      return res.status(409).json({ message: "Email already in use" });
+    }
+  }
+
   // Hash password
   if (password) {
     password = await hashPassword(password);

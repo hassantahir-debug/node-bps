@@ -56,5 +56,14 @@ const getME = asyncHandler(async (req, res) => {
   });
 });
 
-export { login, getME };
+// Logout user
+const logout = asyncHandler(async (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0), // expire immediately
+  });
+  return res.status(200).json({ message: "Logged out successfully" });
+});
+
+export { login, getME, logout };
 
